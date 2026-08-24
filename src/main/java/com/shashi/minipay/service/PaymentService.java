@@ -4,6 +4,8 @@ import com.shashi.minipay.dto.request.CreatePaymentRequest;
 import com.shashi.minipay.dto.response.CreatePaymentResponse;
 import com.shashi.minipay.entity.Payment;
 import com.shashi.minipay.entity.PaymentStatus;
+import com.shashi.minipay.exception.InvalidPaymentStateException;
+import com.shashi.minipay.exception.PaymentNotFoundException;
 import com.shashi.minipay.repository.PaymentRepository;
 import org.springframework.stereotype.Service;
 
@@ -53,7 +55,7 @@ public class PaymentService {
      */
     public CreatePaymentResponse getPaymentById(UUID paymentId) {
         Payment payment = paymentRepository.findById(paymentId)
-                .orElseThrow(() -> new RuntimeException("Payment not found with id: " + paymentId));
+                .orElseThrow(() -> new PaymentNotFoundException("Payment not found with id: " + paymentId));
         return toResponse(payment);
     }
 
@@ -62,7 +64,7 @@ public class PaymentService {
      */
     public CreatePaymentResponse getPaymentByOrderId(String orderId) {
         Payment payment = paymentRepository.findByOrderId(orderId)
-                .orElseThrow(() -> new RuntimeException("Payment not found for orderId: " + orderId));
+                .orElseThrow(() -> new PaymentNotFoundException("Payment not found for orderId: " + orderId));
         return toResponse(payment);
     }
 
@@ -71,10 +73,12 @@ public class PaymentService {
      */
     public void transitionToProcessing(UUID paymentId) {
         Payment payment = paymentRepository.findById(paymentId)
-                .orElseThrow(() -> new RuntimeException("Payment not found with id: " + paymentId));
+                .orElseThrow(() -> new PaymentNotFoundException("Payment not found with id: " + paymentId));
 
         if (payment.getStatus() != PaymentStatus.CREATED) {
-            throw new RuntimeException("Cannot transition payment from " + payment.getStatus() + " to PROCESSING");
+            throw new InvalidPaymentStateException(
+                    "Cannot transition payment from " + payment.getStatus() + " to PROCESSING. Expected status: CREATED"
+            );
         }
 
         payment.setStatus(PaymentStatus.PROCESSING);
@@ -87,10 +91,12 @@ public class PaymentService {
      */
     public void transitionToSuccess(UUID paymentId, String providerTransactionId) {
         Payment payment = paymentRepository.findById(paymentId)
-                .orElseThrow(() -> new RuntimeException("Payment not found with id: " + paymentId));
+                .orElseThrow(() -> new PaymentNotFoundException("Payment not found with id: " + paymentId));
 
         if (payment.getStatus() != PaymentStatus.PROCESSING) {
-            throw new RuntimeException("Cannot transition payment from " + payment.getStatus() + " to SUCCESS");
+            throw new InvalidPaymentStateException(
+                    "Cannot transition payment from " + payment.getStatus() + " to SUCCESS. Expected status: PROCESSING"
+            );
         }
 
         payment.setStatus(PaymentStatus.SUCCESS);
@@ -104,10 +110,12 @@ public class PaymentService {
      */
     public void transitionToFailed(UUID paymentId) {
         Payment payment = paymentRepository.findById(paymentId)
-                .orElseThrow(() -> new RuntimeException("Payment not found with id: " + paymentId));
+                .orElseThrow(() -> new PaymentNotFoundException("Payment not found with id: " + paymentId));
 
         if (payment.getStatus() != PaymentStatus.PROCESSING) {
-            throw new RuntimeException("Cannot transition payment from " + payment.getStatus() + " to FAILED");
+            throw new InvalidPaymentStateException(
+                    "Cannot transition payment from " + payment.getStatus() + " to FAILED. Expected status: PROCESSING"
+            );
         }
 
         payment.setStatus(PaymentStatus.FAILED);
@@ -120,10 +128,12 @@ public class PaymentService {
      */
     public void transitionToCancelled(UUID paymentId) {
         Payment payment = paymentRepository.findById(paymentId)
-                .orElseThrow(() -> new RuntimeException("Payment not found with id: " + paymentId));
+                .orElseThrow(() -> new PaymentNotFoundException("Payment not found with id: " + paymentId));
 
         if (payment.getStatus() == PaymentStatus.SUCCESS || payment.getStatus() == PaymentStatus.FAILED || payment.getStatus() == PaymentStatus.CANCELLED) {
-            throw new RuntimeException("Cannot cancel payment with status: " + payment.getStatus());
+            throw new InvalidPaymentStateException(
+                    "Cannot cancel payment with status: " + payment.getStatus() + ". Payments can only be cancelled in CREATED or PROCESSING state."
+            );
         }
 
         payment.setStatus(PaymentStatus.CANCELLED);

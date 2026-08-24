@@ -1,7 +1,6 @@
 package com.shashi.minipay.controller;
 
-
-import com.shashi.minipay.dto.request.CreatePaymentRequest;
+  import com.shashi.minipay.dto.request.CreatePaymentRequest;
 import com.shashi.minipay.dto.response.CreatePaymentResponse;
 import com.shashi.minipay.service.PaymentService;
 import jakarta.validation.Valid;
@@ -9,8 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
-@RequestMapping("api/payment")
+@RequestMapping("api/payments")
 public class PaymentController {
 
     private final PaymentService paymentService;
@@ -19,17 +20,44 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
 
+    /**
+     * Create a payment with idempotency support.
+     * The Idempotency-Key header ensures duplicate requests return the same payment.
+     */
     @PostMapping
-    public ResponseEntity<CreatePaymentResponse> createPayment(@Valid @RequestBody CreatePaymentRequest request) {
-        CreatePaymentResponse response = paymentService.createPayment(request);
+    public ResponseEntity<CreatePaymentResponse> createPayment(
+           @Valid @RequestBody CreatePaymentRequest request,
+           @RequestHeader(value = "Idempotency-Key", required = true) String idempotencyKey) {
+        
+        CreatePaymentRequest requestWithIdempotencyKey = new CreatePaymentRequest(
+               request.orderId(),
+               request.userId(),
+               request.amount(),
+               request.currency(),
+               idempotencyKey
+        );
+        
+        CreatePaymentResponse response = paymentService.createPayment(requestWithIdempotencyKey);
         return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(response);
+               .status(HttpStatus.CREATED)
+               .body(response);
     }
 
+    /**
+     * Get payment by payment ID.
+     */
+    @GetMapping("/{paymentId}")
+    public ResponseEntity<CreatePaymentResponse> getPaymentById(@PathVariable UUID paymentId) {
+        CreatePaymentResponse paymentResponse = paymentService.getPaymentById(paymentId);
+        return ResponseEntity.ok(paymentResponse);
+    }
+
+    /**
+     * Get payment by order ID.
+     */
     @GetMapping
-    public ResponseEntity<CreatePaymentResponse> getPayment(@RequestParam String orderId) {
-       CreatePaymentResponse paymentResponse = paymentService.getPaymentByOrderId(orderId);
+    public ResponseEntity<CreatePaymentResponse> getPaymentByOrderId(@RequestParam String orderId) {
+        CreatePaymentResponse paymentResponse = paymentService.getPaymentByOrderId(orderId);
         return ResponseEntity.ok(paymentResponse);
     }
 
