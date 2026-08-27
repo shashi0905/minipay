@@ -26,21 +26,26 @@ public class PaymentController {
      */
     @PostMapping
     public ResponseEntity<CreatePaymentResponse> createPayment(
-           @Valid @RequestBody CreatePaymentRequest request,
-           @RequestHeader(value = "Idempotency-Key", required = true) String idempotencyKey) {
-        
+            @Valid @RequestBody CreatePaymentRequest request,
+            @RequestHeader(value = "Idempotency-Key", required = true) String idempotencyKey,
+            javax.servlet.http.HttpServletRequest httpRequest) {
+
+        // Prefer authenticated userId from JWT (set by JwtAuthenticationFilter)
+        Object userIdAttr = httpRequest.getAttribute("userId");
+        String userId = userIdAttr != null ? userIdAttr.toString() : request.userId();
+
         CreatePaymentRequest requestWithIdempotencyKey = new CreatePaymentRequest(
-               request.orderId(),
-               request.userId(),
-               request.amount(),
-               request.currency(),
-               idempotencyKey
+                request.orderId(),
+                userId,
+                request.amount(),
+                request.currency(),
+                idempotencyKey
         );
-        
+
         CreatePaymentResponse response = paymentService.createPayment(requestWithIdempotencyKey);
         return ResponseEntity
-               .status(HttpStatus.CREATED)
-               .body(response);
+                .status(HttpStatus.CREATED)
+                .body(response);
     }
 
     /**

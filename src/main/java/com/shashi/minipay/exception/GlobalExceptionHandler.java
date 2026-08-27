@@ -59,6 +59,51 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Handle JwtException - returns 401 Unauthorized
+     */
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<ErrorResponse> handleJwtException(JwtException ex) {
+        ErrorResponse response = new ErrorResponse(
+                "ERROR",
+                HttpStatus.UNAUTHORIZED.value(),
+                "JWT Token Error",
+                ex.getMessage(),
+                Instant.now()
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+
+    /**
+     * Handle UserAlreadyExistsException - returns 409 Conflict
+     */
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
+        ErrorResponse response = new ErrorResponse(
+                "ERROR",
+                HttpStatus.CONFLICT.value(),
+                "User Already Exists",
+                ex.getMessage(),
+                Instant.now()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    /**
+     * Handle InvalidCredentialsException - returns 401 Unauthorized
+     */
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidCredentialsException(InvalidCredentialsException ex) {
+        ErrorResponse response = new ErrorResponse(
+                "ERROR",
+                HttpStatus.UNAUTHORIZED.value(),
+                "Invalid Credentials",
+                ex.getMessage(),
+                Instant.now()
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+
+    /**
      * Handle missing required headers - returns 400 Bad Request
      */
     @ExceptionHandler(MissingRequestHeaderException.class)
@@ -108,4 +153,5 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 }
+
 
