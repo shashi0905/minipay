@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: mock-payment-provider
+
+server:
+  port: 8084
+  servlet:
+    context-path: /
+
+# Mock provider configuration
+mock-provider:
+  default-behavior: SUCCESS
+  response-delay-ms: 100

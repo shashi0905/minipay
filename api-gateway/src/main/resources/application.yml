@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      default-filters: []
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: GET,POST,PUT,DELETE,OPTIONS
+            allowedHeaders: "*"
+      routes:
+        - id: auth-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - StripPrefix=2
+
+        - id: payment-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/payments/**
+          filters:
+            - StripPrefix=2
+
+        - id: order-service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/orders/**
+          filters:
+            - StripPrefix=2
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+# JWT Configuration (same as Payment Service)
+jwt:
+  secret: your-secret-key-change-this-in-production-use-strong-random-string-at-least-32-characters
+  expiration: 86400000
+
+# Rate Limiting Configuration
+ratelimit:
+  default:
+    requests-per-minute: 100
+  auth:
+    login:
+      requests-per-minute: 5
+    register:
+      requests-per-minute: 10
+  payments:
+    requests-per-minute: 10
+  orders:
+    requests-per-minute: 20
+
+# Logging
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
+    com.shashi.minipay.gateway: DEBUG
