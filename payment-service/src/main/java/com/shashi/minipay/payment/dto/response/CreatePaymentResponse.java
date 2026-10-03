@@ -1,6 +1,6 @@
-package com.shashi.minipay.dto.response;
+package com.shashi.minipay.payment.dto.response;
 
-import com.shashi.minipay.entity.PaymentStatus;
+import com.shashi.minipay.payment.entity.PaymentStatus;
 
 import java.math.BigDecimal;
 import java.time.Instant;

@@ -1,4 +1,4 @@
-package com.shashi.minipay.entity;
+package com.shashi.minipay.payment.entity;
 
 /**
  * UserRole defines the roles available in the system.

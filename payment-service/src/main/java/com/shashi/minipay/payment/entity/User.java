@@ -1,4 +1,4 @@
-package com.shashi.minipay.entity;
+package com.shashi.minipay.payment.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

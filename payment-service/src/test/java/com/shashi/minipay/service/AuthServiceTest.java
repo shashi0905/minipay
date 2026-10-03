@@ -1,12 +1,14 @@
 package com.shashi.minipay.service;
 
-import com.shashi.minipay.dto.request.RegisterRequest;
-import com.shashi.minipay.dto.response.AuthResponse;
-import com.shashi.minipay.entity.User;
-import com.shashi.minipay.entity.UserRole;
-import com.shashi.minipay.exception.UserAlreadyExistsException;
-import com.shashi.minipay.exception.InvalidCredentialsException;
-import com.shashi.minipay.repository.UserRepository;
+import com.shashi.minipay.payment.dto.request.RegisterRequest;
+import com.shashi.minipay.payment.dto.response.AuthResponse;
+import com.shashi.minipay.payment.entity.User;
+import com.shashi.minipay.payment.entity.UserRole;
+import com.shashi.minipay.payment.exception.UserAlreadyExistsException;
+import com.shashi.minipay.payment.exception.InvalidCredentialsException;
+import com.shashi.minipay.payment.repository.UserRepository;
+import com.shashi.minipay.payment.service.AuthService;
+import com.shashi.minipay.payment.service.JwtTokenProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

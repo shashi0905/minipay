@@ -1,4 +1,4 @@
-package com.shashi.minipay.exception;
+package com.shashi.minipay.payment.exception;
 
 /**
  * UserAlreadyExistsException - thrown when attempting to register with duplicate username or email.

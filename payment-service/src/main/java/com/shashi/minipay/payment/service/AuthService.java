@@ -1,11 +1,12 @@
-package com.shashi.minipay.service;
+package com.shashi.minipay.payment.service;
 
-import com.shashi.minipay.dto.request.RegisterRequest;
-import com.shashi.minipay.dto.response.AuthResponse;
-import com.shashi.minipay.entity.User;
-import com.shashi.minipay.entity.UserRole;
-import com.shashi.minipay.exception.UserAlreadyExistsException;
-import com.shashi.minipay.repository.UserRepository;
+import com.shashi.minipay.payment.dto.request.RegisterRequest;
+import com.shashi.minipay.payment.dto.response.AuthResponse;
+import com.shashi.minipay.payment.entity.User;
+import com.shashi.minipay.payment.entity.UserRole;
+import com.shashi.minipay.payment.exception.InvalidCredentialsException;
+import com.shashi.minipay.payment.exception.UserAlreadyExistsException;
+import com.shashi.minipay.payment.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -86,11 +87,11 @@ public class AuthService {
     public AuthResponse login(String usernameOrEmail, String password) {
         User user = userRepository.findByUsername(usernameOrEmail)
                 .or(() -> userRepository.findByEmail(usernameOrEmail))
-                .orElseThrow(() -> new com.shashi.minipay.exception.InvalidCredentialsException("Invalid username/email or password"));
+                .orElseThrow(() -> new InvalidCredentialsException("Invalid username/email or password"));
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         if (!encoder.matches(password, user.getPasswordHash())) {
-            throw new com.shashi.minipay.exception.InvalidCredentialsException("Invalid username/email or password");
+            throw new InvalidCredentialsException("Invalid username/email or password");
         }
 
         String token = jwtTokenProvider.generateToken(user);

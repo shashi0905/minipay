@@ -1,4 +1,4 @@
-package com.shashi.minipay.exception;
+package com.shashi.minipay.payment.exception;
 
 /**
  * InvalidCredentialsException - thrown when login fails (user not found or password mismatch).

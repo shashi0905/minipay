@@ -1,6 +1,6 @@
-package com.shashi.minipay.repository;
+package com.shashi.minipay.payment.repository;
 
-import com.shashi.minipay.entity.Payment;
+import com.shashi.minipay.payment.entity.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,7 +1,7 @@
-package com.shashi.minipay.service;
+package com.shashi.minipay.payment.service;
 
-import com.shashi.minipay.entity.User;
-import com.shashi.minipay.exception.JwtException;
+import com.shashi.minipay.payment.entity.User;
+import com.shashi.minipay.payment.exception.JwtException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;

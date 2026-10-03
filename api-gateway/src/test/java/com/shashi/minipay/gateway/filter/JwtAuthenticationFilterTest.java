@@ -1,6 +1,6 @@
 package com.shashi.minipay.gateway.filter;
 
-import com.shashi.minipay.gateway.security.JwtTokenProvider;
+import com.shashi.minipay.payment.gateway.security.JwtTokenProvider;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.BeforeEach;

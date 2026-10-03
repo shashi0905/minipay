@@ -1,6 +1,6 @@
 package com.shashi.minipay.gateway.security;
 
-import com.shashi.minipay.gateway.exception.GatewayJwtException;
+import com.shashi.minipay.payment.gateway.exception.GatewayJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.BeforeEach;

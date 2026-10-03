@@ -1,7 +1,7 @@
 package com.shashi.minipay.gateway.filter;
 
-import com.shashi.minipay.gateway.exception.GatewayJwtException;
-import com.shashi.minipay.gateway.security.JwtTokenProvider;
+import com.shashi.minipay.payment.gateway.exception.GatewayJwtException;
+import com.shashi.minipay.payment.gateway.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GlobalFilter;

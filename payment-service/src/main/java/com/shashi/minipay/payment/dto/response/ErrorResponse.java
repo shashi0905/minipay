@@ -1,4 +1,4 @@
-package com.shashi.minipay.dto.response;
+package com.shashi.minipay.payment.dto.response;
 
 import java.time.Instant;
 

@@ -1,8 +1,8 @@
-package com.shashi.minipay.controller;
+package com.shashi.minipay.payment.controller;
 
-import com.shashi.minipay.dto.request.CreatePaymentRequest;
-import com.shashi.minipay.dto.response.CreatePaymentResponse;
-import com.shashi.minipay.service.PaymentService;
+import com.shashi.minipay.payment.dto.request.CreatePaymentRequest;
+import com.shashi.minipay.payment.dto.response.CreatePaymentResponse;
+import com.shashi.minipay.payment.service.PaymentService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

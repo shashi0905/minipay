@@ -1,4 +1,4 @@
-package com.shashi.minipay.exception;
+package com.shashi.minipay.payment.exception;
 
 public class IdempotencyViolationException extends RuntimeException {
     public IdempotencyViolationException(String message) {

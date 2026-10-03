@@ -1,6 +1,6 @@
-package com.shashi.minipay.exception;
+package com.shashi.minipay.payment.exception;
 
-import com.shashi.minipay.dto.response.ErrorResponse;
+import com.shashi.minipay.payment.dto.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

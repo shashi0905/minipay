@@ -1,4 +1,4 @@
-package com.shashi.minipay.exception;
+package com.shashi.minipay.payment.exception;
 
 /**
  * JwtException - thrown when JWT token operations fail.

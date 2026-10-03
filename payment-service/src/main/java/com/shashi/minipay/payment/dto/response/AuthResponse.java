@@ -1,6 +1,6 @@
-package com.shashi.minipay.dto.response;
+package com.shashi.minipay.payment.dto.response;
 
-import com.shashi.minipay.entity.UserRole;
+import com.shashi.minipay.payment.entity.UserRole;
 
 import java.time.Instant;
 import java.util.UUID;

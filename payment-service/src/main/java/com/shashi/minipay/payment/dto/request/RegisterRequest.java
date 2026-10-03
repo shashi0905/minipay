@@ -1,4 +1,4 @@
-package com.shashi.minipay.dto.request;
+package com.shashi.minipay.payment.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

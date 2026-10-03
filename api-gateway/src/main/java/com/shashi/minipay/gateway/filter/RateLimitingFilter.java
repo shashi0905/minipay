@@ -1,6 +1,6 @@
 package com.shashi.minipay.gateway.filter;
 
-import com.shashi.minipay.gateway.exception.RateLimitExceededException;
+import com.shashi.minipay.payment.gateway.exception.RateLimitExceededException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GlobalFilter;

@@ -1,6 +1,6 @@
-package com.shashi.minipay.security;
+package com.shashi.minipay.payment.security;
 
-import com.shashi.minipay.service.JwtTokenProvider;
+import com.shashi.minipay.payment.service.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;

@@ -1,12 +1,12 @@
-package com.shashi.minipay.service;
+package com.shashi.minipay.payment.service;
 
-import com.shashi.minipay.dto.request.CreatePaymentRequest;
-import com.shashi.minipay.dto.response.CreatePaymentResponse;
-import com.shashi.minipay.entity.Payment;
-import com.shashi.minipay.entity.PaymentStatus;
-import com.shashi.minipay.exception.InvalidPaymentStateException;
-import com.shashi.minipay.exception.PaymentNotFoundException;
-import com.shashi.minipay.repository.PaymentRepository;
+import com.shashi.minipay.payment.dto.request.CreatePaymentRequest;
+import com.shashi.minipay.payment.dto.response.CreatePaymentResponse;
+import com.shashi.minipay.payment.entity.Payment;
+import com.shashi.minipay.payment.entity.PaymentStatus;
+import com.shashi.minipay.payment.exception.InvalidPaymentStateException;
+import com.shashi.minipay.payment.exception.PaymentNotFoundException;
+import com.shashi.minipay.payment.repository.PaymentRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
