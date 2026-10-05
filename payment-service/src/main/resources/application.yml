@@ -19,6 +19,15 @@ server:
   servlet:
     context-path: /
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+
 # JWT Configuration
 jwt:
   secret: your-secret-key-change-this-in-production-use-strong-random-string-at-least-32-characters

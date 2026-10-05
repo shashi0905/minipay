@@ -36,7 +36,9 @@ public class JwtAuthenticationFilter implements jakarta.servlet.Filter {
 
         String path = httpRequest.getRequestURI();
         // Skip authentication for public endpoints
-        if (path.startsWith("/api/auth") || path.startsWith("/v3/api-docs") || path.startsWith("/swagger") || path.startsWith("/swagger-ui")) {
+        if (path.startsWith("/api/auth") || path.startsWith("/v3/api-docs") ||
+                path.startsWith("/swagger") || path.startsWith("/swagger-ui") ||
+                path.startsWith("/actuator")) {
             chain.doFilter(request, response);
             return;
         }
