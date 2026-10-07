@@ -8,6 +8,12 @@ server:
     context-path: /
 
 # Mock provider configuration
-mock-provider:
-  default-behavior: SUCCESS
-  response-delay-ms: 100
+provider:
+  processing-delay-ms: 500
+  failure-rate: 0.1
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html

@@ -6,6 +6,10 @@ import com.shashi.minipay.payment.entity.Payment;
 import com.shashi.minipay.payment.entity.PaymentStatus;
 import com.shashi.minipay.payment.exception.InvalidPaymentStateException;
 import com.shashi.minipay.payment.exception.PaymentNotFoundException;
+import com.shashi.minipay.payment.provider.PaymentProviderClient;
+import com.shashi.minipay.payment.provider.PaymentProviderException;
+import com.shashi.minipay.payment.provider.dto.ProviderChargeRequest;
+import com.shashi.minipay.payment.provider.dto.ProviderChargeResponse;
 import com.shashi.minipay.payment.repository.PaymentRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +20,11 @@ import java.util.UUID;
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
+    private final PaymentProviderClient paymentProviderClient;
 
-    public PaymentService(PaymentRepository paymentRepository) {
+    public PaymentService(PaymentRepository paymentRepository, PaymentProviderClient paymentProviderClient) {
         this.paymentRepository = paymentRepository;
+        this.paymentProviderClient = paymentProviderClient;
     }
 
     /**
@@ -139,6 +145,50 @@ public class PaymentService {
         payment.setStatus(PaymentStatus.CANCELLED);
         payment.setUpdatedAt(Instant.now());
         paymentRepository.save(payment);
+    }
+
+    /**
+     * Process payment with the external payment provider.
+     * This method calls the mock provider and updates the payment status based on the response.
+     */
+    public CreatePaymentResponse processPayment(UUID paymentId, String paymentMethodId) {
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new PaymentNotFoundException("Payment not found with id: " + paymentId));
+
+        if (payment.getStatus() != PaymentStatus.CREATED) {
+            throw new InvalidPaymentStateException(
+                    "Cannot process payment with status: " + payment.getStatus() + ". Payments can only be processed in CREATED state."
+            );
+        }
+
+        transitionToProcessing(paymentId);
+
+        try {
+            ProviderChargeRequest providerRequest = new ProviderChargeRequest(
+                    payment.getOrderId(),
+                    payment.getUserId(),
+                    payment.getAmount(),
+                    payment.getCurrency(),
+                    paymentMethodId,
+                    payment.getIdempotencyKey()
+            );
+
+            ProviderChargeResponse providerResponse = paymentProviderClient.createCharge(providerRequest).block();
+
+            if ("succeeded".equals(providerResponse.status())) {
+                transitionToSuccess(paymentId, providerResponse.id());
+            } else {
+                transitionToFailed(paymentId);
+            }
+
+            return toResponse(paymentRepository.findById(paymentId).get());
+        } catch (PaymentProviderException e) {
+            transitionToFailed(paymentId);
+            throw new RuntimeException("Payment processing failed: " + e.getMessage(), e);
+        } catch (Exception e) {
+            transitionToFailed(paymentId);
+            throw new RuntimeException("Unexpected error during payment processing: " + e.getMessage(), e);
+        }
     }
 
     private CreatePaymentResponse toResponse(Payment payment) {

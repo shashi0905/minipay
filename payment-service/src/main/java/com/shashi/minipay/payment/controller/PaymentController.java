@@ -66,4 +66,16 @@ public class PaymentController {
         return ResponseEntity.ok(paymentResponse);
     }
 
+    /**
+     * Process payment with the external payment provider.
+     * This endpoint triggers the actual payment processing through the mock provider.
+     */
+    @PostMapping("/{paymentId}/process")
+    public ResponseEntity<CreatePaymentResponse> processPayment(
+            @PathVariable UUID paymentId,
+            @RequestParam String paymentMethodId) {
+        CreatePaymentResponse response = paymentService.processPayment(paymentId, paymentMethodId);
+        return ResponseEntity.ok(response);
+    }
+
 }

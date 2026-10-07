@@ -73,6 +73,11 @@
 			<artifactId>jjwt-jackson</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<!-- WebClient for HTTP calls to payment provider -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
 
 		<!-- Test Dependencies -->
 		<dependency>
