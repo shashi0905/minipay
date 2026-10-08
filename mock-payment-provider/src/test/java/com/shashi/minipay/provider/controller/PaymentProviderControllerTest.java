@@ -29,8 +29,7 @@ class PaymentProviderControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @MockitoBean
     private PaymentProviderService paymentProviderService;
