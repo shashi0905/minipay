@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: order-fulfillment-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/minipay_fulfillment
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        default_schema: fulfillment
+        format_sql: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+server:
+  port: 8084
+  servlet:
+    context-path: /
+
+# RabbitMQ Configuration
+rabbitmq:
+  queue:
+    order-paid: order.paid.queue
+  exchange:
+    order-paid: order.paid.exchange
+  routing-key:
+    order-paid: order.paid.routingkey
