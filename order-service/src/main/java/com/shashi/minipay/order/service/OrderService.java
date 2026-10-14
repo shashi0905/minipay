@@ -11,9 +11,12 @@ import com.shashi.minipay.order.dto.response.OrderItemResponse;
 import com.shashi.minipay.order.entity.Order;
 import com.shashi.minipay.order.entity.OrderItem;
 import com.shashi.minipay.order.entity.OrderStatus;
+import com.shashi.minipay.order.event.OrderItemEvent;
+import com.shashi.minipay.order.event.OrderPaidEvent;
 import com.shashi.minipay.order.exception.InvalidOrderStateException;
 import com.shashi.minipay.order.exception.OrderNotFoundException;
 import com.shashi.minipay.order.exception.PaymentServiceException;
+import com.shashi.minipay.order.publisher.OrderEventPublisher;
 import com.shashi.minipay.order.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,10 +32,12 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final PaymentServiceClient paymentServiceClient;
+    private final OrderEventPublisher orderEventPublisher;
 
-    public OrderService(OrderRepository orderRepository, PaymentServiceClient paymentServiceClient) {
+    public OrderService(OrderRepository orderRepository, PaymentServiceClient paymentServiceClient, OrderEventPublisher orderEventPublisher) {
         this.orderRepository = orderRepository;
         this.paymentServiceClient = paymentServiceClient;
+        this.orderEventPublisher = orderEventPublisher;
     }
 
     /**
@@ -166,6 +171,10 @@ public class OrderService {
                 order.setStatus(OrderStatus.PAID);
                 order.setUpdatedAt(Instant.now());
                 orderRepository.save(order);
+
+                // Publish order paid event for fulfillment service
+                OrderPaidEvent event = toOrderPaidEvent(order);
+                orderEventPublisher.publishOrderPaidEvent(event);
             }
 
             return toResponse(order);
@@ -228,6 +237,30 @@ public class OrderService {
                 order.getCreatedAt(),
                 order.getUpdatedAt(),
                 itemResponses
+        );
+    }
+
+    private OrderPaidEvent toOrderPaidEvent(Order order) {
+        List<OrderItemEvent> itemEvents = order.getItems().stream()
+                .map(item -> new OrderItemEvent(
+                        item.getId(),
+                        item.getProductId(),
+                        item.getProductName(),
+                        item.getQuantity(),
+                        item.getUnitPrice(),
+                        item.getTotalPrice()
+                ))
+                .collect(Collectors.toList());
+
+        return new OrderPaidEvent(
+                order.getId(),
+                order.getOrderNumber(),
+                order.getUserId(),
+                order.getTotalAmount(),
+                order.getCurrency(),
+                order.getPaymentId(),
+                order.getUpdatedAt(),
+                itemEvents
         );
     }
 }

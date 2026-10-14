@@ -20,6 +20,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<springdoc-openapi.version>3.1.0</springdoc-openapi.version>
 		<jjwt.version>0.12.3</jjwt.version>
+		<spring-amqp.version>3.1.6</spring-amqp.version>
 	</properties>
 
 	<modules>
@@ -27,6 +28,7 @@
 		<module>payment-service</module>
 		<module>auth-service</module>
 		<module>order-service</module>
+		<module>order-fulfillment-service</module>
 		<module>mock-payment-provider</module>
 	</modules>
 
@@ -54,6 +56,12 @@
 				<artifactId>jjwt-jackson</artifactId>
 				<version>${jjwt.version}</version>
 				<scope>runtime</scope>
+			</dependency>
+			<!-- Spring AMQP for RabbitMQ -->
+			<dependency>
+				<groupId>org.springframework.amqp</groupId>
+				<artifactId>spring-amqp</artifactId>
+				<version>${spring-amqp.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
